@@ -1,0 +1,6 @@
+## Interface: 11302
+## Title: SuperNova
+## Author: BaZerion / Voidfalme @ Skullflame
+## Version: 0.0.1a
+
+main.lua
