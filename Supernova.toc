@@ -7,3 +7,4 @@ Load.lua
 Guild.lua
 Version.lua
 Help.lua
+Lootlog.lua
