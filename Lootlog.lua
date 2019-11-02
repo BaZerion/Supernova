@@ -1,30 +1,34 @@
 CreateFrame("Frame","lootFrame",UIParent,"UIPanelDialogTemplate"); -- BasicFrameTemplate
 
+
+
 local gList = "";
 
 local numTotalMembers, numOnlineMaxLevelMembers, numOnlineMembers = GetNumGuildMembers();
 
-local lootFrameW = 300;
-local lootFrameH = 400;
+local lootFrameW = 250;
+local lootFrameH = 75;
 
 local listHidden = false;
 
-SLASH_SHOW1 = "/sns"
-SlashCmdList["SHOW"] = function(msg)
+SLASH_SNSHOW1 = "/sns"
+SlashCmdList["SNSHOW"] = function(msg)
    lootFrame:Show()
    listHidden = false;
 end
 
-SLASH_HIDE1 = "/snh"
-SlashCmdList["HIDE"] = function(msg)
+SLASH_SNHIDE1 = "/snh"
+SlashCmdList["SNHIDE"] = function(msg)
    lootFrame:Hide()
    listHidden = true;
 end
 
-SLASH_GGUILD1 = "/sng"
-SlashCmdList["GGUILD"] = function(msg)
+SLASH_SNGGUILD1 = "/sng"
+SlashCmdList["SNGGUILD"] = function(msg)
 
 lootFrame.editFrame:SetText("");
+gList = "";
+GuildRoster();
 
 gList = gList .. "<HTML>" .. string.char(10);
 gList = gList .. "<TITLE> Supernova Roster </TITLE>" .. string.char(10);
@@ -51,7 +55,7 @@ gList = gList .. "</BODY>" .. string.char(10);
 gList = gList .. "</HTML>" .. string.char(10);
 lootFrame.editFrame:SetText(gList);
 
-print("Done!");
+--print("Done!");
 end
 
 
@@ -67,13 +71,20 @@ lootFrame:RegisterForDrag("LeftButton","RightButton");
 lootFrame:EnableMouse(true);
 lootFrame:SetMovable(true);
 
+lootFrame.text = lootFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+lootFrame.text:SetPoint("BOTTOM", lootFrame, "TOPLEFT", 55, -22)
+lootFrame.text:SetText("Supernova v0.0.1")
+
 eFw = lootFrameW - 22;
 
 lootFrame.editFrame = CreateFrame("EditBox", nil, lootFrame, "InputBoxTemplate");
 lootFrame.editFrame:SetPoint("TOPLEFT", 15, -30);
+lootFrame.editFrame:SetPoint("BOTTOMLEFT", 15, -10);
+--lootFrame.editFrame:SetColorTexture(0.2,0.6,0.8);
+ 
 lootFrame.editFrame:SetWidth(eFw);
 lootFrame.editFrame:SetHeight(10);
-lootFrame.editFrame:SetAllPoints(lootFrame);	
+--lootFrame.editFrame:SetAllPoints(lootFrame);	
 
 lootFrame.editFrame:SetMovable(false);
 lootFrame.editFrame:SetAutoFocus(false);
@@ -144,6 +155,23 @@ end)
 
 local lootList = "";
 
+
+SLASH_SNDEL1 = "/snc"
+SlashCmdList["SNDEL"] = function(msg)
+	lootFrame.editFrame:SetText(" ");
+	--print("kalle")
+end
+
+
+SLASH_SNLOOT1 = "/snl"
+SlashCmdList["SNLOOT"] = function(msg)
+	lootFrame.editFrame:SetText(lootList);
+end
+
+--lootFrame.editFrame:SetText(lootList);
+
+
+
 lootFrame:RegisterEvent("CHAT_MSG_LOOT");
 
 lootFrame:SetScript("OnEvent", eventHandler);
@@ -165,7 +193,7 @@ lootFrame:SetScript("OnEvent", eventHandler);
 			start, finish = string.find(msg, "receive loot:")
 			if(start) then
 			lootList = lootList .. string.char(10) .. msg;
-			lootFrame.editFrame:SetText(lootList);
+			
 			--it does contain it
 			else
 			--it doesn't contain it
