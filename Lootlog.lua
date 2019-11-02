@@ -1,5 +1,9 @@
 CreateFrame("Frame","lootFrame",UIParent,"UIPanelDialogTemplate"); -- BasicFrameTemplate
 
+local gList = "";
+
+local numTotalMembers, numOnlineMaxLevelMembers, numOnlineMembers = GetNumGuildMembers();
+
 local lootFrameW = 300;
 local lootFrameH = 400;
 
@@ -16,6 +20,40 @@ SlashCmdList["HIDE"] = function(msg)
    lootFrame:Hide()
    listHidden = true;
 end
+
+SLASH_GGUILD1 = "/sng"
+SlashCmdList["GGUILD"] = function(msg)
+
+lootFrame.editFrame:SetText("");
+
+gList = gList .. "<HTML>" .. string.char(10);
+gList = gList .. "<TITLE> Supernova Roster </TITLE>" .. string.char(10);
+gList = gList .. '<BODY BGCOLOR="BLACK" TEXT="GOLD">' .. string.char(10);
+gList = gList .. "<TABLE>" .. string.char(10);
+
+
+   for i=1,numTotalMembers do
+    
+	local Gname, Grank, GrankIndex, Glevel, Gclass, Gzone, Gnote, 
+		Gofficernote, Gonline, Gstatus, GclassFileName, 
+		GachievementPoints, GachievementRank, GisMobile, GisSoREligible, GstandingID = GetGuildRosterInfo(i);
+     
+	gList = gList .. "<TR>"
+	gList = gList .. string.char(10) .. "<TD>" .. Gname .. "</TD>" .. "<TD>" .. Gclass .. "</TD>" .. "<TD>" .. Gnote .. "</TD>" .. "</TD>" .. "<TD>" .. Grank .. "</TD>" .. "<TD>" .. Glevel .. "</TD>";
+    gList = gList .. "</TR>"
+	
+	end
+
+gList = gList .. string.char(10);
+gList = gList .. string.char(10);
+gList = gList .. "</TABLE>" .. string.char(10);
+gList = gList .. "</BODY>" .. string.char(10);
+gList = gList .. "</HTML>" .. string.char(10);
+lootFrame.editFrame:SetText(gList);
+
+print("Done!");
+end
+
 
 lootFrame:SetSize(lootFrameW,lootFrameH);
 lootFrame:SetPoint("CENTER");
@@ -34,7 +72,8 @@ eFw = lootFrameW - 22;
 lootFrame.editFrame = CreateFrame("EditBox", nil, lootFrame, "InputBoxTemplate");
 lootFrame.editFrame:SetPoint("TOPLEFT", 15, -30);
 lootFrame.editFrame:SetWidth(eFw);
-lootFrame.editFrame:SetHeight(10);	
+lootFrame.editFrame:SetHeight(10);
+lootFrame.editFrame:SetAllPoints(lootFrame);	
 
 lootFrame.editFrame:SetMovable(false);
 lootFrame.editFrame:SetAutoFocus(false);
@@ -113,12 +152,36 @@ lootFrame:SetScript("OnEvent", eventHandler);
 		if event=="CHAT_MSG_LOOT" then
 			local msg = string.gsub(message, "%[", "");
                         -- print ("ERROR");
-			if string.match(msg,"You receive loot:") then
-				lootList = lootList .. string.char(10) .. msg;
-				
-				if listHidden == false then
-				lootFrame.editFrame:SetText(lootList);
-				end	
+			
+			start, finish = string.find(msg, "receives loot:")
+			if(start) then
+			lootList = lootList .. string.char(10) .. msg;
+			lootFrame.editFrame:SetText(lootList);
+			--it does contain it
+			else
+			--it doesn't contain it
 			end
+			
+			start, finish = string.find(msg, "receive loot:")
+			if(start) then
+			lootList = lootList .. string.char(10) .. msg;
+			lootFrame.editFrame:SetText(lootList);
+			--it does contain it
+			else
+			--it doesn't contain it
+			end
+			
+			--------  TRADE
+			--[[start, finish = string.find(msg, "receive item:")
+			if(start) then
+			lootList = lootList .. string.char(10) .. msg;
+			lootFrame.editFrame:SetText(lootList);
+			--it does contain it
+			else
+			--it doesn't contain it
+			end ]]--
+			
+			
+			
 		end
    end)
